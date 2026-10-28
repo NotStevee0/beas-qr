@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+  <meta name="theme-color" content="#e8f3ff" />
+  <title>RSSB BARCODE</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='10' y='10' width='80' height='80' rx='18' fill='%230b4a9e'/><path d='M30 28v44M42 28v44M54 28v44M66 28v44' stroke='white' stroke-width='5'/></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+</head>
+<body>
+  <div class="bg-animation"></div>
+  <div class="blob b1"></div><div class="blob b2"></div>
+
+  <main class="wrap">
+    <header class="hero animate__animated animate__fadeInDown">
+      <div class="badge"><svg class="ico sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5v14M7 5v14M11 5v14M15 5v14M19 5v14M21 5v14" stroke-width="1.6"/></svg><span>Fast QR &amp; Barcode</span></div>
+      <h1>RSSB BARCODE</h1>
+      <p>Generate, scan and save QR codes and barcodes instantly.</p>
+    </header>
+
+    <section class="glass animate__animated animate__fadeInUp">
+      <div class="actions">
+        <button type="button" id="btnScan" class="btn ghost"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><span>Scan Camera</span></button>
+        <label class="btn ghost">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><circle cx="9" cy="10" r="1.6"/><path d="m4 18 5-5 4 4 3-3 4 4"/></svg><span>Scan Image</span>
+          <input type="file" id="fileIn" accept="image/*" hidden />
+        </label>
+      </div>
+
+      <!-- SCANNER BOX -->
+      <div class="video-box" id="videoBox" hidden>
+        <div class="scanner-container">
+          <div id="reader"></div>
+          <div class="laser"></div>
+          <div class="corner top-left"></div>
+          <div class="corner top-right"></div>
+          <div class="corner bottom-left"></div>
+          <div class="corner bottom-right"></div>
+        </div>
+        <button type="button" id="btnStop" class="btn danger small">Stop Scanner</button>
+      </div>
+
+      <div id="msg" class="msg" role="status" aria-live="polite"></div>
+
+      <!-- SCAN RESULT CARD -->
+      <div id="scanResult" class="scan-result-card animate__animated" hidden>
+         <div class="icon-success"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></div>
+         <h3>Scan Successful</h3>
+         <div class="grn-display" id="scannedGrnDisplay">---</div>
+         <button type="button" id="btnUseScanned" class="btn primary block">Use this Code</button>
+      </div>
+
+      <form id="form" autocomplete="off" novalidate>
+        <div class="field">
+          <label for="grno">GR No / Code Data</label>
+          <input id="grno" type="text" placeholder="Enter number..." maxlength="40" required />
+        </div>
+        
+        <div class="actions form-actions">
+          <button type="submit" class="btn primary"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h3v3h-3zM20 14v6h-3"/></svg><span>Generate</span></button>
+          <button type="button" id="btnSave" class="btn ghost" disabled><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m-4-4 4 4 4-4M5 19h14"/></svg><span>Download</span></button>
+        </div>
+      </form>
+
+      <div class="qr-stage" id="stage" hidden>
+        <canvas id="qrCanvas" width="720" height="820"></canvas>
+        <div id="txt" class="payload"></div>
+      </div>
+    </section>
+
+    <section class="glass history animate__animated animate__fadeInUp animate__delay-1s">
+      <div class="history-head">
+        <h2>Saved codes</h2>
+        <span id="dbStatus" class="pill">…</span>
+      </div>
+      <ul id="list" class="list"></ul>
+      <p id="empty" class="muted">Nothing saved yet. Generate and it appears here.</p>
+    </section>
+  </main>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
