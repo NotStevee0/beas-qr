@@ -23,6 +23,21 @@ const btnUseScanned = document.getElementById('btnUseScanned');
 
 let html5QrCode = null;
 
+// Pull only the GRN out of scanned/pasted data.
+// Works with JSON like {"grno":"M00690","name":"...","centre":"Raipur"} or plain text.
+function extractGrn(raw) {
+    const text = String(raw ?? '').trim();
+    try {
+        const obj = JSON.parse(text);
+        if (obj && typeof obj === 'object') {
+            const key = Object.keys(obj).find(k => ['grno', 'grn', 'gr_no', 'grnumber'].includes(k.toLowerCase().replace(/[\s-]/g, '')));
+            if (key && obj[key] != null) return String(obj[key]).trim();
+        }
+    } catch (_) { /* not JSON */ }
+    const m = text.match(/"?gr[\s_-]?n(?:o|umber)?"?\s*[:=]\s*"?([^",}\s]+)/i);
+    return m ? m[1].trim() : text;
+}
+
 // --- 1. CAMERA SCANNING (FAST ENGINE + BARCODES) ---
 btnScan.addEventListener('click', () => {
     scanResultCard.hidden = true; // hide previous results
@@ -92,7 +107,8 @@ fileIn.addEventListener('change', (e) => {
 });
 
 // --- 3. HANDLE SCAN SUCCESS ---
-function handleSuccessfulScan(text) {
+function handleSuccessfulScan(rawText) {
+    const text = extractGrn(rawText);
     stopScan();
     
     // Display the big info card
@@ -116,8 +132,9 @@ btnUseScanned.addEventListener('click', () => {
 // --- 4. GENERATION ---
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const grno = grnoInput.value.trim();
+    const grno = extractGrn(grnoInput.value);
     if (!grno) return;
+    grnoInput.value = grno;
 
     scanResultCard.hidden = true; // hide if it's open
     stage.hidden = false;
@@ -152,7 +169,7 @@ form.addEventListener('submit', async (e) => {
 });
 
 btnSave.addEventListener('click', () => {
-    const grno = grnoInput.value.trim();
+    const grno = extractGrn(grnoInput.value);
     const link = document.createElement('a');
     link.download = `rssb-barcode-${grno || 'generated'}.png`;
     link.href = canvas.toDataURL('image/png');
